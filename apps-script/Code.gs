@@ -47,6 +47,7 @@ function doPost(e) {
 }
 
 function doGet(e) {
+  const callback = e && e.parameter && e.parameter.callback;
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
 
@@ -143,14 +144,21 @@ function doGet(e) {
       distribution: distribution,
       nextMatchIndex: nextMatchIndex,
       updatedAt: new Date().toISOString()
-    });
+    }, callback);
   } catch (err) {
-    return jsonResponse({ success: false, error: err.message, stack: err.stack });
+    return jsonResponse({ success: false, error: err.message, stack: err.stack }, callback);
   }
 }
 
-function jsonResponse(obj) {
+function jsonResponse(obj, callback) {
+  const json = JSON.stringify(obj);
+  if (callback) {
+    // JSONP-svar: kringgår Apps Scripts CORS+redirect-bugg
+    return ContentService
+      .createTextOutput(callback + '(' + json + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
   return ContentService
-    .createTextOutput(JSON.stringify(obj))
+    .createTextOutput(json)
     .setMimeType(ContentService.MimeType.JSON);
 }

@@ -85,34 +85,44 @@ function renderRows(matches, players, nextMatchIndex) {
   }).join('');
 }
 
+function jsonpFetch(url) {
+  return new Promise((resolve, reject) => {
+    const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    let script;
+    let timer;
+    const cleanup = () => {
+      try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+      if (script && script.parentNode) script.parentNode.removeChild(script);
+      if (timer) clearTimeout(timer);
+    };
+    window[cb] = (data) => { cleanup(); resolve(data); };
+    script = document.createElement('script');
+    script.onerror = () => { cleanup(); reject(new Error('JSONP-script kunde inte laddas')); };
+    const sep = url.includes('?') ? '&' : '?';
+    script.src = url + sep + 'callback=' + cb + '&_=' + Date.now();
+    document.head.appendChild(script);
+    timer = setTimeout(() => { cleanup(); reject(new Error('JSONP-timeout efter 15s')); }, 15000);
+  });
+}
+
 async function fetchLeaderboard() {
   const status = document.getElementById('leaderboardStatus');
   const lastUpdated = document.getElementById('lastUpdated');
   const debug = [];
   const isMock = new URLSearchParams(location.search).has('mock');
-  // Cache-bust query för att undvika Apps Scripts redirect-CORS-bugg
-  // som triggas av cachad redirect mot script.googleusercontent.com
-  const baseUrl = isMock ? 'mock-leaderboard.json' : APPS_SCRIPT_URL;
-  const url = isMock
-    ? baseUrl
-    : baseUrl + (baseUrl.includes('?') ? '&' : '?') + '_=' + Date.now();
   debug.push(`Origin: ${location.origin}`);
-  debug.push(`URL: ${url.slice(0, 70)}…`);
+  debug.push(`Mode: ${isMock ? 'mock (fetch)' : 'live (JSONP)'}`);
 
   try {
-    const res = await fetch(url, {
-      method: 'GET',
-      redirect: 'follow',
-      credentials: 'omit',
-      cache: 'no-store'
-    });
-    debug.push(`Status: ${res.status}`);
-    debug.push(`Content-Type: ${res.headers.get('content-type') || '(saknas)'}`);
-    const text = await res.text();
-    debug.push(`Body len: ${text.length}`);
     let data;
-    try { data = JSON.parse(text); }
-    catch (parseErr) { throw new Error(`Svaret är inte JSON: ${parseErr.message}`); }
+    if (isMock) {
+      const res = await fetch('mock-leaderboard.json', { cache: 'no-store' });
+      debug.push(`Status: ${res.status}`);
+      data = await res.json();
+    } else {
+      data = await jsonpFetch(APPS_SCRIPT_URL);
+      debug.push(`JSONP OK`);
+    }
     if (!data.success) throw new Error(data.error || 'Okänt fel');
 
     const matches = data.matches || [];
