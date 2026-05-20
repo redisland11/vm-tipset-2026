@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VM-tävling i stugan 2026</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1>VM-tävling i stugan 2026</h1>
+      <nav class="nav-links">
+        <a href="index.html" class="active">Tipsa</a>
+        <a href="topplistan.html">Topplista</a>
+      </nav>
+      <div class="counter"><span id="picksCount">0</span> / 48 tippade</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <p class="intro">Tipsa på alla matcher i omgång 1 och 2 av gruppspelet. En inlämning per email — se till att du är säker innan du skickar in.</p>
+
+    <section class="identity-card">
+      <div class="field">
+        <label for="name">Ditt namn</label>
+        <input id="name" type="text" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="email">Email-adress</label>
+        <input id="email" type="email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="teamName">Namn på ditt lag</label>
+        <input id="teamName" type="text" required>
+      </div>
+    </section>
+
+    <section class="round">
+      <h2>Omgång 1 — Gruppspel</h2>
+      <div id="round1Container"></div>
+    </section>
+
+    <section class="round">
+      <h2>Omgång 2 — Gruppspel</h2>
+      <div id="round2Container"></div>
+    </section>
+
+    <section class="tiebreaker-card">
+      <h2>Utslagsfråga</h2>
+      <p>Hur många mål görs totalt i alla matcherna (ordinarie tid)?</p>
+      <input id="tieBreaker" type="number" min="0" max="500" inputmode="numeric" required>
+    </section>
+
+    <div id="statusMessage" class="status-message hidden" role="status"></div>
+  </main>
+
+  <footer class="submit-bar">
+    <div class="submit-bar-inner">
+      <span class="submit-hint" id="submitHint">Fyll i alla 48 matcher + utslagsfråga + identitet</span>
+      <button id="submitBtn" type="button" disabled>Skicka in mitt tips</button>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/matches.js"></script>
+  <script src="js/flags.js"></script>
+  <script src="js/form.js"></script>
+</body>
+</html>

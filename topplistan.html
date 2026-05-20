@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Topplista — VM-tävling i stugan 2026</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1>VM-tävling i stugan 2026</h1>
+      <nav class="nav-links">
+        <a href="index.html">Tipsa</a>
+        <a href="topplistan.html" class="active">Topplista</a>
+      </nav>
+      <div class="counter"><span id="lastUpdated">—</span></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="leaderboard-card">
+      <div class="leaderboard-header">
+        <h2>Topplista</h2>
+        <button id="refreshBtn" class="refresh-btn" type="button" title="Uppdatera nu">↻ Uppdatera</button>
+      </div>
+
+      <div id="leaderboardStatus" class="leaderboard-status">Hämtar data…</div>
+
+      <div class="leaderboard-wrapper">
+        <table class="leaderboard-table" id="leaderboardTable">
+          <thead>
+            <tr>
+              <th class="col-rank">Plac.</th>
+              <th class="col-team">Lagnamn</th>
+              <th class="col-name">Namn</th>
+              <th class="col-points">Poäng</th>
+              <th class="col-tiebreak">Utslagsfråga</th>
+              <th class="col-dev">Avvik mål</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/topplistan.js"></script>
+</body>
+</html>
