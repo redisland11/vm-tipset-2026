@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Topplista — VM-tävling i stugan 2026</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -18,28 +19,29 @@
     </div>
   </header>
 
-  <main class="container">
-    <section class="leaderboard-card">
-      <div class="leaderboard-header">
-        <h2>Topplista</h2>
-        <button id="refreshBtn" class="refresh-btn" type="button" title="Uppdatera nu">↻ Uppdatera</button>
+  <main class="container container--wide">
+    <section class="lb-card">
+      <div class="lb-card-header">
+        <div>
+          <h2>Topplista</h2>
+          <p class="lb-subtitle">Scrolla höger för att se alla matcher · gröna celler = rätt, röda = fel</p>
+        </div>
+        <div class="lb-card-actions">
+          <div class="lb-legend">
+            <span class="lb-legend-item"><span class="legend-bar b1"></span> 1 (hemma)</span>
+            <span class="lb-legend-item"><span class="legend-bar bx"></span> X</span>
+            <span class="lb-legend-item"><span class="legend-bar b2"></span> 2 (borta)</span>
+          </div>
+          <button id="refreshBtn" class="refresh-btn" type="button">↻ Uppdatera</button>
+        </div>
       </div>
 
-      <div id="leaderboardStatus" class="leaderboard-status">Hämtar data…</div>
+      <div id="leaderboardStatus" class="leaderboard-status hidden"></div>
 
-      <div class="leaderboard-wrapper">
-        <table class="leaderboard-table" id="leaderboardTable">
-          <thead>
-            <tr>
-              <th class="col-rank">Plac.</th>
-              <th class="col-team">Lagnamn</th>
-              <th class="col-name">Namn</th>
-              <th class="col-points">Poäng</th>
-              <th class="col-tiebreak">Utslagsfråga</th>
-              <th class="col-dev">Avvik mål</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboardBody"></tbody>
+      <div class="lb-table-wrapper" id="lbWrapper">
+        <table class="lb-table" id="lbTable">
+          <thead id="lbThead"></thead>
+          <tbody id="lbTbody"></tbody>
         </table>
       </div>
     </section>

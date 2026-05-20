@@ -500,27 +500,71 @@ a:hover { text-decoration: underline; }
   cursor: not-allowed;
 }
 
-/* ---------- Leaderboard ---------- */
+/* ---------- Leaderboard (Excel-stil med sticky-kolumner) ---------- */
 
-.leaderboard-card {
+.container--wide {
+  max-width: 1600px;
+}
+
+.lb-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px;
   box-shadow: var(--shadow-sm);
+  overflow: hidden;
 }
 
-.leaderboard-header {
+.lb-card-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 16px;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 
-.leaderboard-header h2 {
-  margin: 0;
+.lb-card-header h2 {
+  margin: 0 0 4px;
   font-size: 20px;
 }
+
+.lb-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.lb-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.lb-legend {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.lb-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-bar {
+  display: inline-block;
+  width: 8px;
+  height: 12px;
+  border-radius: 1px;
+}
+
+.legend-bar.b1 { background: #2ea043; }
+.legend-bar.bx { background: #3a3a3a; }
+.legend-bar.b2 { background: #f59f00; }
 
 .refresh-btn {
   background: var(--surface-muted);
@@ -541,12 +585,11 @@ a:hover { text-decoration: underline; }
 }
 
 .leaderboard-status {
-  padding: 12px;
-  border-radius: var(--radius-sm);
+  padding: 12px 24px;
   background: var(--surface-muted);
   color: var(--text-muted);
   font-size: 14px;
-  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 
 .leaderboard-status.hidden {
@@ -558,82 +601,217 @@ a:hover { text-decoration: underline; }
   color: var(--error);
 }
 
-.leaderboard-wrapper {
+.lb-table-wrapper {
   overflow-x: auto;
+  overflow-y: visible;
+  max-width: 100%;
 }
 
-.leaderboard-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.leaderboard-table thead {
-  background: var(--surface-muted);
-}
-
-.leaderboard-table th {
-  text-align: left;
+.lb-table {
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lb-table th,
+.lb-table td {
+  padding: 6px 10px;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.lb-table thead th {
+  border-bottom: 2px solid var(--border-strong);
+  vertical-align: bottom;
+}
+
+/* Sticky columns */
+.lb-table .sticky-col {
+  position: sticky;
+  background: var(--surface);
+  z-index: 2;
+}
+
+.lb-table thead .sticky-col {
+  background: var(--surface-muted);
+  z-index: 3;
+}
+
+.lb-table .col-rank {
+  left: 0;
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lb-table .col-name {
+  left: 50px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  text-align: left;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-muted);
   font-weight: 500;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
 }
 
-.leaderboard-table th.col-rank,
-.leaderboard-table th.col-points,
-.leaderboard-table th.col-tiebreak,
-.leaderboard-table th.col-dev {
-  text-align: right;
-}
-
-.leaderboard-table tbody td {
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-  font-variant-numeric: tabular-nums;
-}
-
-.leaderboard-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.leaderboard-table tbody tr:hover {
-  background: var(--surface-muted);
-}
-
-.leaderboard-table .rank {
-  font-weight: 600;
-  text-align: right;
-  width: 60px;
-}
-
-.leaderboard-table .team {
+.lb-table .col-points {
+  left: 230px;
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+  text-align: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
-.leaderboard-table .points,
-.leaderboard-table .tiebreak,
-.leaderboard-table .dev {
-  text-align: right;
+.lb-table .col-next {
+  left: 310px;
+  width: 170px;
+  min-width: 170px;
+  max-width: 170px;
+  border-right: 2px solid var(--border-strong);
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--text-muted);
+  font-weight: 500;
 }
 
-.leaderboard-table .points {
+/* Tbody sticky cells (override för body-cells) */
+.lb-table tbody .sticky-col {
+  font-weight: 500;
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+}
+
+.lb-table tbody .rank {
+  font-weight: 700;
+  color: var(--text);
+  text-align: right;
+}
+
+.lb-table tbody .name .player-team {
   font-weight: 600;
   color: var(--text);
-  font-size: 15px;
+  font-size: 13px;
 }
 
-.leaderboard-table tr.empty td {
+.lb-table tbody .name .player-person {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.lb-table tbody .points {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 14px;
+  text-align: center;
+}
+
+.lb-table tbody .next {
+  color: var(--text);
+  font-size: 12px;
+  border-right: 2px solid var(--border-strong);
+}
+
+/* Match columns */
+.lb-table .match-col {
+  width: 110px;
+  min-width: 110px;
+  max-width: 110px;
+  text-align: center;
+  vertical-align: bottom;
+  padding-bottom: 6px;
+}
+
+.lb-table .match-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  height: 36px;
+  margin-bottom: 2px;
+}
+
+.lb-table .match-bars .b {
+  width: 18px;
+  min-height: 1px;
+  background: #ccc;
+  border-radius: 2px 2px 0 0;
+}
+
+.lb-table .match-bars .b1 { background: #2ea043; }
+.lb-table .match-bars .bx { background: #3a3a3a; }
+.lb-table .match-bars .b2 { background: #f59f00; }
+
+.lb-table .match-bar-labels {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.lb-table .match-bar-labels span {
+  width: 18px;
+  text-align: center;
+}
+
+.lb-table .match-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-table tbody .match-cell {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text);
+  border-left: 1px solid var(--border);
+}
+
+.lb-table tbody .match-cell.correct {
+  background: #d4edda;
+  color: #155724;
+}
+
+.lb-table tbody .match-cell.wrong {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.lb-table tbody tr.empty td.empty-cell {
   text-align: center;
   padding: 32px 12px;
   color: var(--text-muted);
+  background: var(--surface);
+  position: static;
 }
 
-/* ---------- Responsive ---------- */
+/* ---------- Responsive: Tablet (≤ 768px) ---------- */
 
 @media (max-width: 768px) {
   .topbar-inner {
@@ -708,5 +886,376 @@ a:hover { text-decoration: underline; }
 
   .leaderboard-card {
     padding: 16px;
+  }
+}
+
+/* ---------- Responsive: Phone (≤ 640px) — card-layout för matcher ---------- */
+
+@media (max-width: 640px) {
+  body {
+    padding-bottom: 96px;
+  }
+
+  .topbar-inner {
+    padding: 10px 14px;
+    gap: 8px 12px;
+  }
+
+  .topbar h1 {
+    font-size: 15px;
+    line-height: 1.25;
+    flex: 1 1 auto;
+  }
+
+  .nav-links {
+    margin-left: 0;
+  }
+
+  .counter {
+    font-size: 12px;
+  }
+
+  .container {
+    padding: 16px 12px;
+  }
+
+  .intro {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .round {
+    margin-bottom: 24px;
+  }
+
+  .round h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  /* Card-layout: gör om varje matchrad till ett kort */
+  .match-table-wrapper {
+    overflow: visible;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .match-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+  }
+
+  .match-table thead {
+    display: none;
+  }
+
+  .match-table,
+  .match-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .match-table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-areas:
+      "date date date date date  group"
+      "home home home away away  away"
+      "p1   p1   pX   pX   p2    p2";
+    column-gap: 4px;
+    row-gap: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .match-table tbody tr:first-child,
+  .match-table tbody tr.group-break {
+    border-top: 1px solid var(--border);
+  }
+
+  .match-table tbody tr.group-break {
+    margin-top: 16px;
+  }
+
+  .match-table tbody tr:hover,
+  .match-table tbody tr.picked {
+    background: var(--surface);
+  }
+
+  .match-table tbody tr.picked {
+    border-color: var(--accent);
+    background: rgba(31, 111, 235, 0.03);
+  }
+
+  .match-table td {
+    display: block;
+    padding: 0;
+    border: 0;
+    border-left: 0;
+  }
+
+  .match-table .date {
+    grid-area: date;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  .match-table .date .d-day {
+    display: inline;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .match-table .date .d-time {
+    display: inline;
+    margin-left: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .match-table .group {
+    grid-area: group;
+    align-self: center;
+    justify-self: end;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface-muted);
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .match-table .group::before {
+    content: "Grupp ";
+  }
+
+  .match-table .home,
+  .match-table .away {
+    padding: 0;
+    width: auto;
+    white-space: normal;
+    font-weight: 500;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .match-table .home {
+    grid-area: home;
+    justify-content: flex-start;
+  }
+
+  .match-table .away {
+    grid-area: away;
+    justify-content: flex-end;
+  }
+
+  .match-table .home-inner,
+  .match-table .away-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+    flex-direction: row-reverse;
+    min-width: 0;
+  }
+
+  .match-table .team-name {
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.2;
+  }
+
+  .match-table .flag {
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  /* Pick-celler placeras i botten av kortet, inline-layout */
+  .match-table tr > td.pick:nth-child(5) { grid-area: p1; }
+  .match-table tr > td.pick:nth-child(6) { grid-area: pX; }
+  .match-table tr > td.pick:nth-child(7) { grid-area: p2; }
+
+  .match-table .pick {
+    width: auto;
+    height: auto;
+    min-height: 36px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    white-space: nowrap;
+  }
+
+  /* Utfall (1/X/2) stort + fett, vertikal divider, sedan poäng som meta */
+  .match-table .pick::before {
+    content: attr(data-choice);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    padding-right: 8px;
+    margin-right: 8px;
+    border-right: 1px solid var(--border-strong);
+    line-height: 1;
+  }
+
+  .match-table .pick .points {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .match-table .pick .unit {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-left: 2px;
+  }
+
+  .match-table .pick.selected {
+    border-color: var(--accent);
+  }
+
+  .match-table .pick.selected::before {
+    color: white;
+    border-right-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .match-table .pick.selected .points,
+  .match-table .pick.selected .unit {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  /* Kryssmarkering är onödig när hela cellen är blå */
+  .match-table .pick.selected::after {
+    display: none;
+  }
+
+  /* Tiebreaker, status, submit-bar */
+  .tiebreaker-card {
+    padding: 16px;
+  }
+
+  .tiebreaker-card h2 {
+    font-size: 16px;
+  }
+
+  .tiebreaker-card p {
+    font-size: 13px;
+  }
+
+  .tiebreaker-card input {
+    width: 100%;
+    max-width: 160px;
+  }
+
+  .submit-bar-inner {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .submit-hint {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  #submitBtn {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  /* Topplistan på mobil — dölj sekundära kolumner, kompaktare layout */
+  .leaderboard-card {
+    padding: 12px;
+  }
+
+  .leaderboard-header h2 {
+    font-size: 17px;
+  }
+
+  .refresh-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .leaderboard-table {
+    font-size: 13px;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 10px 8px;
+  }
+
+  .leaderboard-table th.col-tiebreak,
+  .leaderboard-table th.col-dev,
+  .leaderboard-table tbody td.tiebreak,
+  .leaderboard-table tbody td.dev {
+    display: none;
+  }
+
+  .leaderboard-table .rank {
+    width: 40px;
+    padding-right: 4px;
+  }
+
+  .leaderboard-table .team {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .leaderboard-table .name {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .leaderboard-table .points {
+    font-size: 15px;
+  }
+}
+
+/* ---------- Responsive: Small phone (≤ 380px) — extra trångt ---------- */
+
+@media (max-width: 380px) {
+  .topbar h1 {
+    font-size: 14px;
+    flex: 1 1 100%;
+  }
+
+  .counter {
+    width: 100%;
+    text-align: left;
+  }
+
+  .match-table tbody tr {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .match-table .pick {
+    min-height: 48px;
+  }
+
+  .match-table .flag {
+    width: 20px;
+  }
+
+  /* På riktigt små telefoner: dölj även Namn-kolumnen i topplistan */
+  .leaderboard-table th.col-name,
+  .leaderboard-table tbody td.name {
+    display: none;
   }
 }
