@@ -23,10 +23,10 @@ function renderRound(roundNumber, containerId) {
     prevGroup = m.group;
 
     html += `<tr${groupBreak ? ' class="group-break"' : ''} data-match-index="${globalIdx}">
-      <td class="date">${formatDate(m.date)}</td>
+      <td class="date"><span class="d-day">${formatDate(m.date)}</span><span class="d-time">${m.time}</span></td>
       <td class="group">${m.group}</td>
-      <td class="home">${flagImg(m.home)}<span class="team-name">${m.home}</span></td>
-      <td class="away"><span class="team-name">${m.away}</span>${flagImg(m.away)}</td>
+      <td class="home"><span class="home-inner"><span class="team-name">${m.home}</span>${flagImg(m.home)}</span></td>
+      <td class="away"><span class="away-inner">${flagImg(m.away)}<span class="team-name">${m.away}</span></span></td>
       <td class="pick" data-choice="1" tabindex="0" role="radio" aria-label="${m.home} ${p.home} poäng"><span class="points">${p.home}</span><span class="unit">p</span></td>
       <td class="pick" data-choice="X" tabindex="0" role="radio" aria-label="Oavgjort ${p.draw} poäng"><span class="points">${p.draw}</span><span class="unit">p</span></td>
       <td class="pick" data-choice="2" tabindex="0" role="radio" aria-label="${m.away} ${p.away} poäng"><span class="points">${p.away}</span><span class="unit">p</span></td>

@@ -49,14 +49,16 @@ const TEAM_ISO = {
   "Panama": "pa"
 };
 
-function flagUrl(team, width = 32) {
+// flagcdn.com stödjer endast specifika widths: 20, 40, 80, 160, 320, 640, 1280, 2560.
+// För matchtabellen renderar vi i 40px och låter CSS skala ner till önskad visuell storlek.
+function flagUrl(team, width = 40) {
   const code = TEAM_ISO[team];
   if (!code) return "";
   return `https://flagcdn.com/w${width}/${code}.png`;
 }
 
-function flagImg(team, width = 32) {
+function flagImg(team, width = 40) {
   const url = flagUrl(team, width);
   if (!url) return "";
-  return `<img class="flag" src="${url}" alt="${team}" loading="lazy" width="${width}">`;
+  return `<img class="flag" src="${url}" alt="${team}" loading="lazy">`;
 }

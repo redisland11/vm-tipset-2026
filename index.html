@@ -49,7 +49,7 @@
     <section class="tiebreaker-card">
       <h2>Utslagsfråga</h2>
       <p>Hur många mål görs totalt i alla matcherna (ordinarie tid)?</p>
-      <input id="tieBreaker" type="number" min="0" max="500" inputmode="numeric" required>
+      <input id="tieBreaker" type="number" min="0" max="500" step="1" inputmode="numeric" required>
     </section>
 
     <div id="statusMessage" class="status-message hidden" role="status"></div>
@@ -57,7 +57,7 @@
 
   <footer class="submit-bar">
     <div class="submit-bar-inner">
-      <span class="submit-hint" id="submitHint">Fyll i alla 48 matcher + utslagsfråga + identitet</span>
+      <span class="submit-hint" id="submitHint"></span>
       <button id="submitBtn" type="button" disabled>Skicka in mitt tips</button>
     </div>
   </footer>

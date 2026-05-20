@@ -217,11 +217,13 @@ a:hover { text-decoration: underline; }
 
 .match-table th.col-pick {
   text-align: center;
-  width: 86px;
+  width: 88px;
 }
 
-.match-table th.col-date { width: 66px; }
+.match-table th.col-date { width: 70px; }
 .match-table th.col-group { width: 56px; }
+.match-table th.col-home { text-align: right; padding-right: 18px; }
+.match-table th.col-away { text-align: left; padding-left: 18px; }
 
 .match-table tbody tr {
   border-top: 1px solid var(--border);
@@ -253,6 +255,18 @@ a:hover { text-decoration: underline; }
   color: var(--text-muted);
   font-size: 13px;
   white-space: nowrap;
+  line-height: 1.25;
+}
+
+.match-table .date .d-day {
+  display: block;
+}
+
+.match-table .date .d-time {
+  display: block;
+  font-size: 12px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
 }
 
 .match-table .group {
@@ -264,20 +278,29 @@ a:hover { text-decoration: underline; }
 .match-table .home, .match-table .away {
   white-space: nowrap;
   font-weight: 500;
+  width: 50%;
 }
 
 .match-table .home {
-  display: flex;
+  text-align: right;
+  padding-right: 18px;
+}
+
+.match-table .home-inner {
+  display: inline-flex;
   align-items: center;
   gap: 10px;
 }
 
 .match-table .away {
-  display: flex;
+  text-align: left;
+  padding-left: 18px;
+}
+
+.match-table .away-inner {
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 10px;
-  text-align: right;
 }
 
 .match-table .flag {
@@ -303,8 +326,14 @@ a:hover { text-decoration: underline; }
   padding: 6px;
 }
 
-.match-table .pick:hover {
-  background: var(--accent-soft);
+@media (hover: hover) {
+  .match-table .pick:hover {
+    background: var(--accent-soft);
+  }
+
+  .match-table .pick.selected:hover {
+    background: var(--accent-hover);
+  }
 }
 
 .match-table .pick:focus-visible {
@@ -313,18 +342,16 @@ a:hover { text-decoration: underline; }
 }
 
 .match-table .pick .points {
-  display: block;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
 
 .match-table .pick .unit {
-  display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-faint);
-  margin-top: 1px;
+  margin-left: 2px;
 }
 
 .match-table .pick.selected {
