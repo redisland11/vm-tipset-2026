@@ -707,16 +707,10 @@ a:hover { text-decoration: underline; }
   text-align: right;
 }
 
-.lb-table tbody .name .player-team {
+.lb-table tbody .name {
   font-weight: 600;
   color: var(--text);
   font-size: 13px;
-}
-
-.lb-table tbody .name .player-person {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 1px;
 }
 
 .lb-table tbody .points {
@@ -887,6 +881,69 @@ a:hover { text-decoration: underline; }
   .leaderboard-card {
     padding: 16px;
   }
+
+  /* Topplistan: krympa sticky-kolumnerna, dölj "Nästa match" på mobil */
+  .container--wide {
+    padding: 12px 8px;
+  }
+
+  .lb-card-header {
+    padding: 14px 16px;
+  }
+
+  .lb-card-header h2 { font-size: 17px; }
+  .lb-subtitle { font-size: 12px; }
+  .lb-legend { font-size: 11px; gap: 8px; }
+
+  .lb-table .col-rank {
+    width: 34px;
+    min-width: 34px;
+    max-width: 34px;
+    padding: 6px 4px;
+  }
+
+  .lb-table .col-name {
+    left: 34px;
+    width: 108px;
+    min-width: 108px;
+    max-width: 108px;
+    padding: 6px 6px;
+  }
+
+  .lb-table .col-points {
+    left: 142px;
+    width: 52px;
+    min-width: 52px;
+    max-width: 52px;
+    padding: 6px 4px;
+    border-right: 2px solid var(--border-strong);
+  }
+
+  .lb-table .col-next {
+    display: none;
+  }
+
+  .lb-table tbody .name {
+    font-size: 12px;
+    white-space: normal;
+    line-height: 1.25;
+  }
+
+  .lb-table tbody .points { font-size: 13px; }
+  .lb-table tbody .rank { font-size: 12px; }
+
+  .lb-table .match-col {
+    width: 86px;
+    min-width: 86px;
+    max-width: 86px;
+  }
+
+  .lb-table .match-bars { height: 28px; gap: 3px; }
+  .lb-table .match-bars .b { width: 14px; }
+  .lb-table .match-bar-labels { gap: 3px; font-size: 9px; }
+  .lb-table .match-bar-labels span { width: 14px; }
+  .lb-table .match-name { font-size: 10px; }
+  .lb-table tbody .match-cell { font-size: 10px; padding: 4px 4px; }
 }
 
 /* ---------- Responsive: Phone (≤ 640px) — card-layout för matcher ---------- */

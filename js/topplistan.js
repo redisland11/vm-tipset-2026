@@ -77,10 +77,7 @@ function renderRows(matches, players, nextMatchIndex) {
     }).join('');
     return `<tr>
       <td class="sticky-col col-rank rank">${escapeHtml(p.rank)}</td>
-      <td class="sticky-col col-name name">
-        <div class="player-team">${escapeHtml(p.teamName)}</div>
-        <div class="player-person">${escapeHtml(p.name)}</div>
-      </td>
+      <td class="sticky-col col-name name">${escapeHtml(p.teamName)}</td>
       <td class="sticky-col col-points points">${escapeHtml(p.totalPoints)}</td>
       <td class="sticky-col col-next next">${escapeHtml(nextPick)}</td>
       ${cells}
@@ -93,12 +90,22 @@ async function fetchLeaderboard() {
   const lastUpdated = document.getElementById('lastUpdated');
   const debug = [];
   const isMock = new URLSearchParams(location.search).has('mock');
-  const url = isMock ? 'mock-leaderboard.json' : APPS_SCRIPT_URL;
+  // Cache-bust query för att undvika Apps Scripts redirect-CORS-bugg
+  // som triggas av cachad redirect mot script.googleusercontent.com
+  const baseUrl = isMock ? 'mock-leaderboard.json' : APPS_SCRIPT_URL;
+  const url = isMock
+    ? baseUrl
+    : baseUrl + (baseUrl.includes('?') ? '&' : '?') + '_=' + Date.now();
   debug.push(`Origin: ${location.origin}`);
   debug.push(`URL: ${url.slice(0, 70)}…`);
 
   try {
-    const res = await fetch(url, { method: 'GET', redirect: 'follow', credentials: 'omit' });
+    const res = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
+      credentials: 'omit',
+      cache: 'no-store'
+    });
     debug.push(`Status: ${res.status}`);
     debug.push(`Content-Type: ${res.headers.get('content-type') || '(saknas)'}`);
     const text = await res.text();
