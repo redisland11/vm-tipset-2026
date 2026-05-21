@@ -67,9 +67,41 @@ Apps Script har två deploy-lägen:
 
 För enkelhet under utveckling: använd `Deploy → Test deployments → Web app URL`. När du är nöjd, kör en riktig deploy.
 
+## Odds-uppdateringssekret (ODDS_UPDATE_SECRET)
+
+För att verktyget `tools/paste-odds.html` ska kunna skriva nya odds till Sheet:en krävs en delad hemlig nyckel som matchas mot Apps Scripts Script Properties.
+
+### Setup engångs
+
+1. **Generera secret lokalt:**
+   ```
+   node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"
+   ```
+   Resultatet är en 48 tecken lång hex-sträng.
+
+2. **Spara strängen** i din lösenordshanterare under "VM-tipset ODDS_UPDATE_SECRET". Du anger den i verktyget vid varje synk.
+
+3. **Lägg till i Apps Script:**
+   - Öppna Apps Script-editorn (Tillägg → Apps Script från Sheet:en)
+   - Klicka kugghjulet "Projekt-inställningar" i vänsterspalten
+   - Scrolla till "Scripta egenskaper" (Script properties)
+   - Klicka "Lägg till skriptegenskap"
+   - **Namn:** `ODDS_UPDATE_SECRET`
+   - **Värde:** *din genererade sträng*
+   - Klicka "Spara skriptegenskaper"
+
+### Verifiera setup
+
+Kör i PowerShell eller terminal (ersätt `<URL>` med din `APPS_SCRIPT_URL`):
+```
+curl "<URL>?action=updateOdds&s=fel&d=&callback=test"
+```
+Förväntat: en JS-respons som innehåller `"error":"UNAUTHORIZED"`. Det bekräftar att handlern finns och nyckelvalidering fungerar.
+
 ## Säkerhetsnoteringar
 
 - Endpointen är öppen ("Anyone access"). Vem som helst som hittar URL:en kan POSTa och GETa.
-- Dubbel-submit blockeras via email-validering i `doPost`.
+- Dubbel-submit blockeras via email-validering i `handleSubmit` (på GET med `action=submit`).
+- Odds-uppdatering kräver `ODDS_UPDATE_SECRET` (se ovan) — utan rätt secret returnerar `updateOdds` UNAUTHORIZED.
 - Vill du gömma URL:en mer: håll repot privat tills du delar formulär-länken med deltagarna.
 - Loggar finns under "Exekveringar" i Apps Script-editorn.
