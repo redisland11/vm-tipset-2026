@@ -173,7 +173,18 @@ async function submitTips() {
   status.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Ladda odds först — utan dem kan vi inte visa korrekta poäng i 1/X/2-cellerna.
+  try {
+    await loadOdds();
+  } catch (err) {
+    const status = document.getElementById('statusMessage');
+    status.className = 'status-message error';
+    status.textContent = `Kunde inte ladda odds: ${err.message}. Ladda om sidan.`;
+    status.classList.remove('hidden');
+    return;  // ingen rendering, submit-knappen aktiveras aldrig
+  }
+
   renderRound(1, 'round1Container');
   renderRound(2, 'round2Container');
 
