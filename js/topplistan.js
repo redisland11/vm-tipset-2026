@@ -133,6 +133,10 @@ async function fetchLeaderboard() {
     document.getElementById('lbThead').innerHTML = renderHeader(matches, distribution);
     document.getElementById('lbTbody').innerHTML = renderRows(matches, players, nextMatchIndex);
 
+    // Återapplicera nuvarande sökfilter (om något) efter ny render
+    const searchInput = document.getElementById('lbSearch');
+    if (searchInput && searchInput.value) applySearch(searchInput.value);
+
     status.classList.add('hidden');
     lastUpdated.textContent = formatTime(new Date(data.updatedAt || Date.now()));
   } catch (err) {
@@ -145,11 +149,32 @@ async function fetchLeaderboard() {
   }
 }
 
+function applySearch(term) {
+  const t = (term || '').trim().toLowerCase();
+  const tbody = document.getElementById('lbTbody');
+  if (!tbody) return;
+  tbody.querySelectorAll('tr').forEach(row => {
+    if (!t) {
+      row.classList.remove('filtered-out');
+      return;
+    }
+    // Söker i alla sticky-kolumner: rank, lagnamn, poäng, nästa match
+    const text = row.textContent.toLowerCase();
+    row.classList.toggle('filtered-out', !text.includes(t));
+  });
+}
+
 // Topplistan uppdateras manuellt via "↻ Uppdatera"-knappen.
 // Ingen auto-polling: topplistan ändras bara när facit matas in (2-3 ggr/dag),
 // så slöseri med Apps Script-quota att polla kontinuerligt.
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('refreshBtn').addEventListener('click', fetchLeaderboard);
+
+  const searchInput = document.getElementById('lbSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', e => applySearch(e.target.value));
+  }
+
   fetchLeaderboard().then(() => {
     const scrollVal = new URLSearchParams(location.search).get('scroll');
     if (scrollVal) {

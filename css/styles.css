@@ -613,6 +613,28 @@ a:hover { text-decoration: underline; }
   gap: 4px;
 }
 
+.lb-search {
+  padding: 7px 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text);
+  min-width: 200px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.lb-search:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.lb-table tbody tr.filtered-out {
+  display: none;
+}
+
 .legend-bar {
   display: inline-block;
   width: 8px;
