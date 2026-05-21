@@ -602,9 +602,9 @@ a:hover { text-decoration: underline; }
 }
 
 .lb-table-wrapper {
-  overflow-x: auto;
-  overflow-y: visible;
+  overflow: auto;
   max-width: 100%;
+  max-height: calc(100vh - 180px);
 }
 
 .lb-table {
@@ -625,18 +625,23 @@ a:hover { text-decoration: underline; }
 .lb-table thead th {
   border-bottom: 2px solid var(--border-strong);
   vertical-align: bottom;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--surface-muted);
 }
 
-/* Sticky columns */
+/* Sticky columns (horisontell stickiness inom wrapper) */
 .lb-table .sticky-col {
   position: sticky;
   background: var(--surface);
   z-index: 2;
 }
 
+/* Corner cells: sticky både vertikalt OCH horisontellt — högsta z-index */
 .lb-table thead .sticky-col {
   background: var(--surface-muted);
-  z-index: 3;
+  z-index: 4;
 }
 
 .lb-table .col-rank {

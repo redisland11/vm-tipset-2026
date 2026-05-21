@@ -98,6 +98,26 @@ function validateForm() {
   }
 }
 
+function jsonpFetch(url) {
+  return new Promise((resolve, reject) => {
+    const cb = 'jsonpCb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    let script;
+    let timer;
+    const cleanup = () => {
+      try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+      if (script && script.parentNode) script.parentNode.removeChild(script);
+      if (timer) clearTimeout(timer);
+    };
+    window[cb] = (data) => { cleanup(); resolve(data); };
+    script = document.createElement('script');
+    script.onerror = () => { cleanup(); reject(new Error('JSONP-script kunde inte laddas')); };
+    const sep = url.includes('?') ? '&' : '?';
+    script.src = url + sep + 'callback=' + cb + '&_=' + Date.now();
+    document.head.appendChild(script);
+    timer = setTimeout(() => { cleanup(); reject(new Error('JSONP-timeout efter 30s')); }, 30000);
+  });
+}
+
 async function submitTips() {
   const btn = document.getElementById('submitBtn');
   const status = document.getElementById('statusMessage');
@@ -106,25 +126,18 @@ async function submitTips() {
   btn.textContent = 'Skickar…';
   status.className = 'status-message hidden';
 
+  // Skicka picks som array av strings (texten "Mexiko 200 p" osv) — kompakt
   const payload = {
     name: document.getElementById('name').value.trim(),
     email: document.getElementById('email').value.trim(),
     teamName: document.getElementById('teamName').value.trim(),
     tieBreaker: parseInt(document.getElementById('tieBreaker').value, 10),
-    picks: MATCHES.map((m, idx) => ({
-      matchIndex: idx,
-      choice: picks[idx],
-      answerText: answerText(m, picks[idx])
-    }))
+    picks: MATCHES.map((m, idx) => answerText(m, picks[idx]))
   };
 
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
+    const url = APPS_SCRIPT_URL + '?action=submit&data=' + encodeURIComponent(JSON.stringify(payload));
+    const data = await jsonpFetch(url);
 
     if (data.success) {
       status.className = 'status-message success';

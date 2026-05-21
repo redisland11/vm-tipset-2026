@@ -48,6 +48,13 @@ function doPost(e) {
 
 function doGet(e) {
   const callback = e && e.parameter && e.parameter.callback;
+  const action = e && e.parameter && e.parameter.action;
+
+  // Submit via GET med data i URL-parameter (JSONP-vänligt, undviker CORS-bugg)
+  if (action === 'submit') {
+    return handleSubmit(e, callback);
+  }
+
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
 
@@ -147,6 +154,49 @@ function doGet(e) {
     }, callback);
   } catch (err) {
     return jsonResponse({ success: false, error: err.message, stack: err.stack }, callback);
+  }
+}
+
+function handleSubmit(e, callback) {
+  try {
+    const payload = JSON.parse(e.parameter.data || '{}');
+
+    if (!payload.name || !payload.email || !payload.teamName ||
+        !Array.isArray(payload.picks) || payload.picks.length !== 48 ||
+        payload.tieBreaker === undefined || payload.tieBreaker === null) {
+      return jsonResponse({ success: false, error: 'INVALID_PAYLOAD' }, callback);
+    }
+
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName(FORMULARSVAR_SHEET);
+    if (!sheet) {
+      return jsonResponse({ success: false, error: 'SHEET_NOT_FOUND' }, callback);
+    }
+
+    const lastRow = sheet.getLastRow();
+    if (lastRow >= 2) {
+      const emails = sheet.getRange(2, 3, lastRow - 1, 1).getValues();
+      const incoming = payload.email.toLowerCase().trim();
+      const exists = emails.some(r => r[0] && r[0].toString().toLowerCase().trim() === incoming);
+      if (exists) {
+        return jsonResponse({ success: false, error: 'EMAIL_EXISTS' }, callback);
+      }
+    }
+
+    const row = [
+      new Date(),
+      payload.name,
+      payload.email,
+      payload.teamName,
+      ...payload.picks,
+      payload.tieBreaker
+    ];
+
+    sheet.appendRow(row);
+
+    return jsonResponse({ success: true }, callback);
+  } catch (err) {
+    return jsonResponse({ success: false, error: err.message }, callback);
   }
 }
 
