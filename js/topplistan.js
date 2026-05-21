@@ -1,6 +1,3 @@
-const POLL_INTERVAL_MS = 30000;
-let pollTimer = null;
-
 function escapeHtml(str) {
   return String(str ?? '')
     .replaceAll('&', '&amp;')
@@ -143,11 +140,9 @@ async function fetchLeaderboard() {
   }
 }
 
-function startPolling() {
-  if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(fetchLeaderboard, POLL_INTERVAL_MS);
-}
-
+// Topplistan uppdateras manuellt via "↻ Uppdatera"-knappen.
+// Ingen auto-polling: topplistan ändras bara när facit matas in (2-3 ggr/dag),
+// så slöseri med Apps Script-quota att polla kontinuerligt.
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('refreshBtn').addEventListener('click', fetchLeaderboard);
   fetchLeaderboard().then(() => {
@@ -157,15 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const wrapper = document.getElementById('lbWrapper');
         if (wrapper) wrapper.scrollLeft = parseInt(scrollVal, 10);
       }, 200);
-    }
-  });
-  startPolling();
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-    } else {
-      fetchLeaderboard();
-      startPolling();
     }
   });
 });
