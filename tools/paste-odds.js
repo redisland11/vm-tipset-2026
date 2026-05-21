@@ -114,13 +114,29 @@ document.getElementById('processBtn').addEventListener('click', () => {
   window._lastMatched = matched;
 });
 
-async function syncToAppsScript(matched, secret) {
-  const url = APPS_SCRIPT_URL + (APPS_SCRIPT_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({
-      action: 'updateOdds',
+// JSONP-GET istället för POST: undviker Apps Scripts redirect-CORS-bugg på POST.
+// Samma mönster som form.js submit och topplistan.js använder.
+function syncToAppsScript(matched, secret) {
+  return new Promise((resolve, reject) => {
+    const cb = 'oddsSyncCb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    let script;
+    let timer;
+    const cleanup = () => {
+      try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+      if (script && script.parentNode) script.parentNode.removeChild(script);
+      if (timer) clearTimeout(timer);
+    };
+
+    window[cb] = (data) => {
+      cleanup();
+      if (!data || !data.success) {
+        reject(new Error((data && data.error) || 'Okänt fel'));
+      } else {
+        resolve(data);
+      }
+    };
+
+    const payload = {
       secret,
       odds: matched.map(m => ({
         round: m.round,
@@ -130,13 +146,20 @@ async function syncToAppsScript(matched, secret) {
         oddsDraw: m.oddsDraw,
         oddsAway: m.oddsAway,
       })),
-    }),
-    credentials: 'omit',
-    cache: 'no-store',
+    };
+
+    script = document.createElement('script');
+    script.onerror = () => { cleanup(); reject(new Error('JSONP-script kunde inte laddas')); };
+    const sep = APPS_SCRIPT_URL.includes('?') ? '&' : '?';
+    script.src = APPS_SCRIPT_URL + sep
+      + 'action=updateOdds'
+      + '&callback=' + cb
+      + '&data=' + encodeURIComponent(JSON.stringify(payload))
+      + '&_=' + Date.now();
+    document.head.appendChild(script);
+
+    timer = setTimeout(() => { cleanup(); reject(new Error('Timeout efter 30s')); }, 30000);
   });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.error || 'Okänt fel');
-  return data;
 }
 
 document.getElementById('syncBtn').addEventListener('click', async () => {

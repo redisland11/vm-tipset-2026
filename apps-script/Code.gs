@@ -52,19 +52,19 @@ function doPost(e) {
   }
 }
 
-function updateOdds(payload) {
+function updateOdds(payload, callback) {
   const SECRET = PropertiesService.getScriptProperties().getProperty('ODDS_UPDATE_SECRET');
   if (!SECRET || payload.secret !== SECRET) {
-    return jsonResponse({ success: false, error: 'UNAUTHORIZED' });
+    return jsonResponse({ success: false, error: 'UNAUTHORIZED' }, callback);
   }
   if (!Array.isArray(payload.odds) || payload.odds.length !== 48) {
-    return jsonResponse({ success: false, error: 'EXPECTED_48_ODDS' });
+    return jsonResponse({ success: false, error: 'EXPECTED_48_ODDS' }, callback);
   }
 
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const sheet = ss.getSheetByName(MATCHDATA_SHEET);
   if (!sheet) {
-    return jsonResponse({ success: false, error: 'MATCHDATA_NOT_FOUND' });
+    return jsonResponse({ success: false, error: 'MATCHDATA_NOT_FOUND' }, callback);
   }
 
   // Läs Matchdata rad 2-49, kolumner A-E (round, group, date, home, away)
@@ -79,8 +79,8 @@ function updateOdds(payload) {
     if (!m) {
       return jsonResponse({
         success: false,
-        error: `Saknas i payload: round ${round}, ${home} vs ${away}`
-      });
+        error: 'Saknas i payload: round ' + round + ', ' + home + ' vs ' + away
+      }, callback);
     }
     newOdds.push([m.oddsHome, m.oddsDraw, m.oddsAway]);
   }
@@ -92,7 +92,7 @@ function updateOdds(payload) {
     success: true,
     updated: 48,
     at: new Date().toISOString()
-  });
+  }, callback);
 }
 
 function doGet(e) {
@@ -102,6 +102,17 @@ function doGet(e) {
   // Submit via GET med data i URL-parameter (JSONP-vänligt, undviker CORS-bugg)
   if (action === 'submit') {
     return handleSubmit(e, callback);
+  }
+
+  // Odds-uppdatering via GET (samma JSONP-mönster som submit, undviker POST-CORS)
+  if (action === 'updateOdds') {
+    try {
+      const payload = JSON.parse(e.parameter.data || '{}');
+      payload.action = 'updateOdds';
+      return updateOdds(payload, callback);
+    } catch (err) {
+      return jsonResponse({ success: false, error: 'INVALID_DATA: ' + err.message }, callback);
+    }
   }
 
   try {
