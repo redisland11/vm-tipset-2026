@@ -104,12 +104,25 @@ function doGet(e) {
     return handleSubmit(e, callback);
   }
 
-  // Odds-uppdatering via GET (samma JSONP-mönster som submit, undviker POST-CORS)
+  // Odds-uppdatering via GET (samma JSONP-mönster som submit, undviker POST-CORS).
+  // Payload som CSV-string i parametern 'd' för att URL inte ska överstiga 8KB.
+  // Format: "round,home,away,oH,oD,oA;round,home,away,oH,oD,oA;..."
   if (action === 'updateOdds') {
     try {
-      const payload = JSON.parse(e.parameter.data || '{}');
-      payload.action = 'updateOdds';
-      return updateOdds(payload, callback);
+      const secret = e.parameter.s || '';
+      const csv = e.parameter.d || '';
+      const odds = csv.split(';').filter(function(s) { return s; }).map(function(row) {
+        const cols = row.split(',');
+        return {
+          round: parseInt(cols[0], 10),
+          home: cols[1],
+          away: cols[2],
+          oddsHome: parseFloat(cols[3]),
+          oddsDraw: parseFloat(cols[4]),
+          oddsAway: parseFloat(cols[5]),
+        };
+      });
+      return updateOdds({ secret: secret, odds: odds }, callback);
     } catch (err) {
       return jsonResponse({ success: false, error: 'INVALID_DATA: ' + err.message }, callback);
     }

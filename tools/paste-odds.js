@@ -136,17 +136,12 @@ function syncToAppsScript(matched, secret) {
       }
     };
 
-    const payload = {
-      secret,
-      odds: matched.map(m => ({
-        round: m.round,
-        home: m.home,
-        away: m.away,
-        oddsHome: m.oddsHome,
-        oddsDraw: m.oddsDraw,
-        oddsAway: m.oddsAway,
-      })),
-    };
+    // CSV-format för payload — JSON gav URL > 8KB → HTTP 400 från Apps Scripts proxy.
+    // Format: "round,home,away,oH,oD,oA;round,home,away,oH,oD,oA;..."
+    const csv = matched.map(m => [
+      m.round, m.home, m.away,
+      m.oddsHome.toFixed(2), m.oddsDraw.toFixed(2), m.oddsAway.toFixed(2)
+    ].join(',')).join(';');
 
     script = document.createElement('script');
     script.onerror = () => { cleanup(); reject(new Error('JSONP-script kunde inte laddas')); };
@@ -154,7 +149,8 @@ function syncToAppsScript(matched, secret) {
     script.src = APPS_SCRIPT_URL + sep
       + 'action=updateOdds'
       + '&callback=' + cb
-      + '&data=' + encodeURIComponent(JSON.stringify(payload))
+      + '&s=' + encodeURIComponent(secret)
+      + '&d=' + encodeURIComponent(csv)
       + '&_=' + Date.now();
     document.head.appendChild(script);
 
