@@ -7,6 +7,12 @@ function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
 
+    // Action-routing: ny endpoint för odds-uppdatering
+    if (payload.action === 'updateOdds') {
+      return updateOdds(payload);
+    }
+
+    // Default: tipsinlämning (befintlig logik)
     if (!payload.name || !payload.email || !payload.teamName ||
         !Array.isArray(payload.picks) || payload.picks.length !== 48 ||
         payload.tieBreaker === undefined || payload.tieBreaker === null) {
@@ -44,6 +50,49 @@ function doPost(e) {
   } catch (err) {
     return jsonResponse({ success: false, error: err.message });
   }
+}
+
+function updateOdds(payload) {
+  const SECRET = PropertiesService.getScriptProperties().getProperty('ODDS_UPDATE_SECRET');
+  if (!SECRET || payload.secret !== SECRET) {
+    return jsonResponse({ success: false, error: 'UNAUTHORIZED' });
+  }
+  if (!Array.isArray(payload.odds) || payload.odds.length !== 48) {
+    return jsonResponse({ success: false, error: 'EXPECTED_48_ODDS' });
+  }
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName(MATCHDATA_SHEET);
+  if (!sheet) {
+    return jsonResponse({ success: false, error: 'MATCHDATA_NOT_FOUND' });
+  }
+
+  // Läs Matchdata rad 2-49, kolumner A-E (round, group, date, home, away)
+  const meta = sheet.getRange(2, 1, 48, 5).getValues();
+  const newOdds = [];
+
+  for (let i = 0; i < 48; i++) {
+    const round = meta[i][0];
+    const home = meta[i][3];
+    const away = meta[i][4];
+    const m = payload.odds.find(o => o.round === round && o.home === home && o.away === away);
+    if (!m) {
+      return jsonResponse({
+        success: false,
+        error: `Saknas i payload: round ${round}, ${home} vs ${away}`
+      });
+    }
+    newOdds.push([m.oddsHome, m.oddsDraw, m.oddsAway]);
+  }
+
+  // Atomic write till F2:H49 (Odds_1, Odds_X, Odds_2)
+  sheet.getRange(2, 6, 48, 3).setValues(newOdds);
+
+  return jsonResponse({
+    success: true,
+    updated: 48,
+    at: new Date().toISOString()
+  });
 }
 
 function doGet(e) {
