@@ -69,24 +69,42 @@ function updateOdds(payload, callback) {
 
   // Läs Matchdata rad 2-49, kolumner A-E (round, group, date, home, away)
   const meta = sheet.getRange(2, 1, 48, 5).getValues();
-  const newOdds = [];
+  const newOdds = [];    // F:H Odds_1, Odds_X, Odds_2
+  const newPoints = [];  // I:K Poäng_1, Poäng_X, Poäng_2 (odds × 100)
+  const newAnswers = []; // L:N Svartext_1, Svartext_X, Svartext_2 (matchar form.js answerText)
 
   for (let i = 0; i < 48; i++) {
     const round = meta[i][0];
     const home = meta[i][3];
     const away = meta[i][4];
-    const m = payload.odds.find(o => o.round === round && o.home === home && o.away === away);
+    const m = payload.odds.find(function(o) {
+      return o.round === round && o.home === home && o.away === away;
+    });
     if (!m) {
       return jsonResponse({
         success: false,
         error: 'Saknas i payload: round ' + round + ', ' + home + ' vs ' + away
       }, callback);
     }
+
+    const pH = Math.round(m.oddsHome * 100);
+    const pD = Math.round(m.oddsDraw * 100);
+    const pA = Math.round(m.oddsAway * 100);
+
     newOdds.push([m.oddsHome, m.oddsDraw, m.oddsAway]);
+    newPoints.push([pH, pD, pA]);
+    newAnswers.push([
+      home + ' ' + pH + ' p',
+      'Oavgjort ' + pD + ' p',
+      away + ' ' + pA + ' p'
+    ]);
   }
 
-  // Atomic write till F2:H49 (Odds_1, Odds_X, Odds_2)
-  sheet.getRange(2, 6, 48, 3).setValues(newOdds);
+  // Atomic writes till tre regioner. Skriver explicit istället för att lita på
+  // ev. formler i I:K och L:N — så facit och rättning alltid är i synk med oddsen.
+  sheet.getRange(2, 6, 48, 3).setValues(newOdds);     // F:H
+  sheet.getRange(2, 9, 48, 3).setValues(newPoints);   // I:K
+  sheet.getRange(2, 12, 48, 3).setValues(newAnswers); // L:N
 
   return jsonResponse({
     success: true,
