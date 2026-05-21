@@ -67,6 +67,34 @@ function renderPreview(matched, unmatched) {
   root.innerHTML = html;
 }
 
+function buildCsv(matched) {
+  const ts = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const header = 'round,group,home,away,oddsHome,oddsDraw,oddsAway,updatedAt';
+  const rows = matched.map(m => [
+    m.round,
+    m.group,
+    m.home,
+    m.away,
+    m.oddsHome.toFixed(2),
+    m.oddsDraw.toFixed(2),
+    m.oddsAway.toFixed(2),
+    ts,
+  ].join(','));
+  return [header, ...rows].join('\n') + '\n';
+}
+
+function downloadCsv(text) {
+  const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'odds.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 document.getElementById('processBtn').addEventListener('click', () => {
   const text = document.getElementById('input').value;
   const parsed = parseExpektText(text);
