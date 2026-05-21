@@ -139,6 +139,12 @@ async function submitTips() {
     const url = APPS_SCRIPT_URL + '?action=submit&data=' + encodeURIComponent(JSON.stringify(payload));
     const data = await jsonpFetch(url);
 
+    // Säkerhetscheck: om Apps Script är gamla versionen returnerar den leaderboard-data
+    // istället för en submit-bekräftelse. Detektera och varna istället för fel-positivt success.
+    if (data.success && data.action !== 'submit_ok' && data.action !== 'submit_error' && (data.matches || data.players)) {
+      throw new Error('Apps Script har inte uppdaterats. Re-deploya Code.gs (ny version) enligt DEPLOY.md, sen försök igen.');
+    }
+
     if (data.success) {
       status.className = 'status-message success';
       status.textContent = `Tack ${payload.name}! Ditt tips är inskickat. Du kan följa topplistan här bredvid.`;

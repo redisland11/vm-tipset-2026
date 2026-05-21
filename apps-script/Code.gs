@@ -194,9 +194,9 @@ function handleSubmit(e, callback) {
 
     sheet.appendRow(row);
 
-    return jsonResponse({ success: true }, callback);
+    return jsonResponse({ success: true, action: 'submit_ok' }, callback);
   } catch (err) {
-    return jsonResponse({ success: false, error: err.message }, callback);
+    return jsonResponse({ success: false, action: 'submit_error', error: err.message }, callback);
   }
 }
 
