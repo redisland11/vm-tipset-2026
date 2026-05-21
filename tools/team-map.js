@@ -3,9 +3,11 @@
 // Lägg till nya entries när verktyget rapporterar "Hittade inte X" vid första körningen.
 
 const TEAM_MAP = {
-  // Kända avvikelser (gissning, kalibreras vid första körningen)
-  "Bosnien-Hercegovina": "Bosnien och Hercegovina",
+  // Kalibrerat mot Expekts faktiska namngivning (2026-05-21)
   "DR Kongo": "Kongo-Kinshasa",
+  "Curacao": "Curaçao",
+  // Behållna för säkerhet (alternativa stavningar Expekt kan börja använda)
+  "Bosnien-Hercegovina": "Bosnien och Hercegovina",
   "Demokratiska republiken Kongo": "Kongo-Kinshasa",
 };
 

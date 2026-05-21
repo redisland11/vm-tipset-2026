@@ -1,8 +1,11 @@
 // tools/paste-odds.js
 // Parsar text från Expekt, matchar mot MATCHES, genererar odds-objekt.
 
-// Första gissning på Expekts format. Kalibreras när första copy-paste görs.
-const EXPEKT_REGEX = /(?<home>[\wåäöÅÄÖ\-\. ]+?)\s*[-–]\s*(?<away>[\wåäöÅÄÖ\-\. ]+?)\s+(?<oddsHome>\d+[.,]\d+)\s+(?<oddsDraw>\d+[.,]\d+)\s+(?<oddsAway>\d+[.,]\d+)/g;
+// Kalibrerat mot Expekts faktiska format (2026-05-21):
+// Lag på var sin rad, sedan tom rad, sedan 3 odds med tomma rader emellan.
+// Datum-rader (t.ex. "11/0621:00") och market-rader (t.ex. "Ö 2.5") matchar inte
+// eftersom följande rad måste börja med bokstav, inte siffra.
+const EXPEKT_REGEX = /(?<home>[A-Za-zÅÄÖåäö][^\n]*?)\n(?<away>[A-Za-zÅÄÖåäö][^\n]*?)\n\s*\n(?<oddsHome>\d+\.\d+)\s*\n+(?<oddsDraw>\d+\.\d+)\s*\n+(?<oddsAway>\d+\.\d+)/g;
 
 function parseExpektText(text) {
   const matches = [];
