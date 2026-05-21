@@ -158,9 +158,9 @@ function applySearch(term) {
       row.classList.remove('filtered-out');
       return;
     }
-    // Söker i alla sticky-kolumner: rank, lagnamn, poäng, nästa match
-    const text = row.textContent.toLowerCase();
-    row.classList.toggle('filtered-out', !text.includes(t));
+    const teamCell = row.querySelector('.col-name');
+    const teamText = teamCell ? teamCell.textContent.toLowerCase() : '';
+    row.classList.toggle('filtered-out', !teamText.includes(t));
   });
 }
 
