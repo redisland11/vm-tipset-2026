@@ -139,9 +139,9 @@ async function submitTips() {
     const url = APPS_SCRIPT_URL + '?action=submit&data=' + encodeURIComponent(JSON.stringify(payload));
     const data = await jsonpFetch(url);
 
-    // Säkerhetscheck: om Apps Script är gamla versionen returnerar den leaderboard-data
-    // istället för en submit-bekräftelse. Detektera och varna istället för fel-positivt success.
-    if (data.success && data.action !== 'submit_ok' && data.action !== 'submit_error' && (data.matches || data.players)) {
+    // Kontrakt: handleSubmit svarar alltid med action='submit_ok' eller 'submit_error'.
+    // Saknas fältet → gammal deploy av Apps Script som ignorerar action=submit.
+    if (data.action !== 'submit_ok' && data.action !== 'submit_error') {
       throw new Error('Apps Script har inte uppdaterats. Re-deploya Code.gs (ny version) enligt DEPLOY.md, sen försök igen.');
     }
 
@@ -153,6 +153,11 @@ async function submitTips() {
     } else if (data.error === 'EMAIL_EXISTS') {
       status.className = 'status-message error';
       status.textContent = `Email-adressen ${payload.email} har redan skickat in ett tips. Kontakta oss om du tror att det är fel.`;
+      btn.disabled = false;
+      btn.textContent = 'Skicka in mitt tips';
+    } else if (data.error === 'TEAM_NAME_EXISTS') {
+      status.className = 'status-message error';
+      status.textContent = `Lagnamnet "${payload.teamName}" är redan upptaget. Välj ett annat lagnamn och skicka in igen.`;
       btn.disabled = false;
       btn.textContent = 'Skicka in mitt tips';
     } else {

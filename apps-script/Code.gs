@@ -164,22 +164,28 @@ function handleSubmit(e, callback) {
     if (!payload.name || !payload.email || !payload.teamName ||
         !Array.isArray(payload.picks) || payload.picks.length !== 48 ||
         payload.tieBreaker === undefined || payload.tieBreaker === null) {
-      return jsonResponse({ success: false, error: 'INVALID_PAYLOAD' }, callback);
+      return jsonResponse({ success: false, action: 'submit_error', error: 'INVALID_PAYLOAD' }, callback);
     }
 
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const sheet = ss.getSheetByName(FORMULARSVAR_SHEET);
     if (!sheet) {
-      return jsonResponse({ success: false, error: 'SHEET_NOT_FOUND' }, callback);
+      return jsonResponse({ success: false, action: 'submit_error', error: 'SHEET_NOT_FOUND' }, callback);
     }
 
     const lastRow = sheet.getLastRow();
     if (lastRow >= 2) {
-      const emails = sheet.getRange(2, 3, lastRow - 1, 1).getValues();
-      const incoming = payload.email.toLowerCase().trim();
-      const exists = emails.some(r => r[0] && r[0].toString().toLowerCase().trim() === incoming);
-      if (exists) {
-        return jsonResponse({ success: false, error: 'EMAIL_EXISTS' }, callback);
+      // Kolumn C = email, kolumn D = lagnamn (matchar rad-strukturen vid appendRow nedan)
+      const rows = sheet.getRange(2, 3, lastRow - 1, 2).getValues();
+      const incomingEmail = payload.email.toLowerCase().trim();
+      const incomingTeam = payload.teamName.toLowerCase().trim();
+      const emailExists = rows.some(r => r[0] && r[0].toString().toLowerCase().trim() === incomingEmail);
+      if (emailExists) {
+        return jsonResponse({ success: false, action: 'submit_error', error: 'EMAIL_EXISTS' }, callback);
+      }
+      const teamExists = rows.some(r => r[1] && r[1].toString().toLowerCase().trim() === incomingTeam);
+      if (teamExists) {
+        return jsonResponse({ success: false, action: 'submit_error', error: 'TEAM_NAME_EXISTS' }, callback);
       }
     }
 
