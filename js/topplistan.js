@@ -104,11 +104,14 @@ function jsonpFetch(url) {
 
 async function fetchLeaderboard() {
   const status = document.getElementById('leaderboardStatus');
+  const loading = document.getElementById('lbLoading');
   const lastUpdated = document.getElementById('lastUpdated');
   const debug = [];
   const isMock = new URLSearchParams(location.search).has('mock');
   debug.push(`Origin: ${location.origin}`);
   debug.push(`Mode: ${isMock ? 'mock (fetch)' : 'live (JSONP)'}`);
+
+  if (loading) loading.classList.remove('hidden');
 
   try {
     let data;
@@ -137,6 +140,8 @@ async function fetchLeaderboard() {
     status.className = 'leaderboard-status error';
     status.innerHTML = `<strong>Kunde inte hämta topplistan</strong><br><pre style="margin:8px 0 0;white-space:pre-wrap;font-size:11px;">${escapeHtml(debug.join('\n'))}</pre>`;
     status.classList.remove('hidden');
+  } finally {
+    if (loading) loading.classList.add('hidden');
   }
 }
 
