@@ -110,3 +110,58 @@ document.getElementById('processBtn').addEventListener('click', () => {
   renderPreview(matched, unmatched);
   window._lastMatched = matched;
 });
+
+async function syncToAppsScript(matched, secret) {
+  const url = APPS_SCRIPT_URL + (APPS_SCRIPT_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'updateOdds',
+      secret,
+      odds: matched.map(m => ({
+        round: m.round,
+        home: m.home,
+        away: m.away,
+        oddsHome: m.oddsHome,
+        oddsDraw: m.oddsDraw,
+        oddsAway: m.oddsAway,
+      })),
+    }),
+    credentials: 'omit',
+    cache: 'no-store',
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Okänt fel');
+  return data;
+}
+
+document.getElementById('syncBtn').addEventListener('click', async () => {
+  const matched = window._lastMatched;
+  const secret = document.getElementById('secret').value;
+  if (!matched || matched.length !== 48) {
+    setStatus('syncStatus', 'Bearbeta först en komplett uppsättning matcher.', 'err');
+    return;
+  }
+  if (!secret) {
+    setStatus('syncStatus', 'Ange ODDS_UPDATE_SECRET.', 'err');
+    return;
+  }
+
+  setStatus('syncStatus', 'Synkar till Sheet:en...', '');
+  document.getElementById('syncBtn').disabled = true;
+
+  try {
+    const result = await syncToAppsScript(matched, secret);
+    downloadCsv(buildCsv(matched));
+    setStatus(
+      'syncStatus',
+      `✓ Sheet uppdaterad (${result.updated} rader). odds.csv nedladdad — flytta till tippsida-webb/odds.csv och git commit:a.`,
+      'ok'
+    );
+  } catch (err) {
+    setStatus('syncStatus', `Fel vid synk: ${err.message}`, 'err');
+  } finally {
+    document.getElementById('syncBtn').disabled = false;
+  }
+});
