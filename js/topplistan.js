@@ -164,12 +164,9 @@ function applySearch(term) {
   });
 }
 
-// Topplistan uppdateras manuellt via "↻ Uppdatera"-knappen.
-// Ingen auto-polling: topplistan ändras bara när facit matas in (2-3 ggr/dag),
-// så slöseri med Apps Script-quota att polla kontinuerligt.
+// Ingen auto-polling: topplistan ändras bara när facit matas in (2-3 ggr/dag).
+// Användaren laddar om sidan för att hämta senaste topplistan.
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('refreshBtn').addEventListener('click', fetchLeaderboard);
-
   const searchInput = document.getElementById('lbSearch');
   if (searchInput) {
     searchInput.addEventListener('input', e => applySearch(e.target.value));
