@@ -1,49 +1,49 @@
 round,group,home,away,oddsHome,oddsDraw,oddsAway,updatedAt
-1,A,Mexiko,Sydafrika,1.47,4.25,6.70,2026-05-21T10:22:53Z
-1,A,Sydkorea,Tjeckien,2.70,3.15,2.70,2026-05-21T10:22:53Z
-1,B,Kanada,Bosnien och Hercegovina,1.80,3.70,4.30,2026-05-21T10:22:53Z
-1,D,USA,Paraguay,2.02,3.50,3.60,2026-05-21T10:22:53Z
-1,B,Qatar,Schweiz,9.50,5.60,1.30,2026-05-21T10:22:53Z
-1,C,Brasilien,Marocko,1.60,3.95,5.40,2026-05-21T10:22:53Z
-1,C,Haiti,Skottland,6.70,4.80,1.42,2026-05-21T10:22:53Z
-1,D,Australien,Turkiet,4.25,3.65,1.80,2026-05-21T10:22:53Z
-1,E,Tyskland,Curaçao,1.03,15.00,45.00,2026-05-21T10:22:53Z
-1,F,Nederländerna,Japan,2.02,3.65,3.50,2026-05-21T10:22:53Z
-1,E,Elfenbenskusten,Ecuador,3.45,2.95,2.30,2026-05-21T10:22:53Z
-1,F,Sverige,Tunisien,1.95,3.40,4.00,2026-05-21T10:22:53Z
-1,H,Spanien,Kap Verde,1.08,10.50,25.00,2026-05-21T10:22:53Z
-1,G,Belgien,Egypten,1.65,3.95,4.95,2026-05-21T10:22:53Z
-1,H,Saudiarabien,Uruguay,6.20,4.30,1.50,2026-05-21T10:22:53Z
-1,G,Iran,Nya Zeeland,1.85,3.55,4.25,2026-05-21T10:22:53Z
-1,I,Frankrike,Senegal,1.44,4.50,6.90,2026-05-21T10:22:53Z
-1,I,Irak,Norge,10.00,5.90,1.26,2026-05-21T10:22:53Z
-1,J,Argentina,Algeriet,1.40,4.50,7.90,2026-05-21T10:22:53Z
-1,J,Österrike,Jordanien,1.33,5.30,8.00,2026-05-21T10:22:53Z
-1,K,Portugal,Kongo-Kinshasa,1.28,5.80,10.00,2026-05-21T10:22:53Z
-1,L,England,Kroatien,1.75,3.75,4.60,2026-05-21T10:22:53Z
-1,L,Ghana,Panama,1.95,3.60,3.70,2026-05-21T10:22:53Z
-1,K,Uzbekistan,Colombia,7.40,4.55,1.42,2026-05-21T10:22:53Z
-2,A,Tjeckien,Sydafrika,2.00,3.25,3.95,2026-05-21T10:22:53Z
-2,B,Schweiz,Bosnien och Hercegovina,1.57,4.05,5.80,2026-05-21T10:22:53Z
-2,B,Kanada,Qatar,1.53,4.10,6.30,2026-05-21T10:22:53Z
-2,A,Mexiko,Sydkorea,1.83,3.45,4.45,2026-05-21T10:22:53Z
-2,D,USA,Australien,1.75,3.70,4.60,2026-05-21T10:22:53Z
-2,C,Skottland,Marocko,3.65,3.20,2.10,2026-05-21T10:22:53Z
-2,C,Brasilien,Haiti,1.06,12.00,30.00,2026-05-21T10:22:53Z
-2,D,Turkiet,Paraguay,2.20,3.20,3.40,2026-05-21T10:22:53Z
-2,F,Nederländerna,Sverige,1.67,3.90,4.85,2026-05-21T10:22:53Z
-2,E,Tyskland,Elfenbenskusten,1.55,4.20,5.60,2026-05-21T10:22:53Z
-2,E,Ecuador,Curaçao,1.26,5.80,11.00,2026-05-21T10:22:53Z
-2,F,Tunisien,Japan,4.30,3.35,1.88,2026-05-21T10:22:53Z
-2,H,Spanien,Saudiarabien,1.11,8.50,20.00,2026-05-21T10:22:53Z
-2,G,Belgien,Iran,1.42,4.50,7.40,2026-05-21T10:22:53Z
-2,H,Uruguay,Kap Verde,1.44,4.45,7.00,2026-05-21T10:22:53Z
-2,G,Nya Zeeland,Egypten,5.10,3.70,1.70,2026-05-21T10:22:53Z
-2,J,Argentina,Österrike,1.65,3.80,5.30,2026-05-21T10:22:53Z
-2,I,Frankrike,Irak,1.14,8.25,18.00,2026-05-21T10:22:53Z
-2,I,Norge,Senegal,2.02,3.50,3.55,2026-05-21T10:22:53Z
-2,J,Jordanien,Algeriet,5.10,3.75,1.67,2026-05-21T10:22:53Z
-2,K,Portugal,Uzbekistan,1.22,6.60,12.00,2026-05-21T10:22:53Z
-2,L,England,Ghana,1.33,5.10,9.00,2026-05-21T10:22:53Z
-2,L,Panama,Kroatien,6.90,4.15,1.47,2026-05-21T10:22:53Z
-2,K,Colombia,Kongo-Kinshasa,1.50,4.05,6.70,2026-05-21T10:22:53Z
+1,A,Mexiko,Sydafrika,1.47,4.30,6.70,2026-05-26T08:37:04Z
+1,A,Sydkorea,Tjeckien,2.65,3.15,2.70,2026-05-26T08:37:04Z
+1,B,Kanada,Bosnien och Hercegovina,1.80,3.70,4.25,2026-05-26T08:37:04Z
+1,D,USA,Paraguay,2.00,3.45,3.70,2026-05-26T08:37:04Z
+1,B,Qatar,Schweiz,9.00,5.60,1.30,2026-05-26T08:37:04Z
+1,C,Brasilien,Marocko,1.60,3.95,5.50,2026-05-26T08:37:04Z
+1,C,Haiti,Skottland,7.00,4.80,1.42,2026-05-26T08:37:04Z
+1,D,Australien,Turkiet,4.25,3.65,1.80,2026-05-26T08:37:04Z
+1,E,Tyskland,Curaçao,1.02,18.00,45.00,2026-05-26T08:37:04Z
+1,F,Nederländerna,Japan,2.02,3.65,3.45,2026-05-26T08:37:04Z
+1,E,Elfenbenskusten,Ecuador,3.40,2.90,2.35,2026-05-26T08:37:04Z
+1,F,Sverige,Tunisien,1.95,3.40,4.00,2026-05-26T08:37:04Z
+1,H,Spanien,Kap Verde,1.08,10.50,25.00,2026-05-26T08:37:04Z
+1,G,Belgien,Egypten,1.67,3.95,4.85,2026-05-26T08:37:04Z
+1,H,Saudiarabien,Uruguay,6.10,4.35,1.50,2026-05-26T08:37:04Z
+1,G,Iran,Nya Zeeland,1.85,3.55,4.20,2026-05-26T08:37:04Z
+1,I,Frankrike,Senegal,1.44,4.50,6.90,2026-05-26T08:37:04Z
+1,I,Irak,Norge,10.00,6.00,1.26,2026-05-26T08:37:04Z
+1,J,Argentina,Algeriet,1.40,4.50,7.80,2026-05-26T08:37:04Z
+1,J,Österrike,Jordanien,1.33,5.30,8.00,2026-05-26T08:37:04Z
+1,K,Portugal,Kongo-Kinshasa,1.26,5.90,10.00,2026-05-26T08:37:04Z
+1,L,England,Kroatien,1.75,3.65,4.60,2026-05-26T08:37:04Z
+1,L,Ghana,Panama,2.02,3.55,3.50,2026-05-26T08:37:04Z
+1,K,Uzbekistan,Colombia,7.50,4.60,1.42,2026-05-26T08:37:04Z
+2,A,Tjeckien,Sydafrika,2.00,3.25,3.95,2026-05-26T08:37:04Z
+2,B,Schweiz,Bosnien och Hercegovina,1.55,4.10,5.90,2026-05-26T08:37:04Z
+2,B,Kanada,Qatar,1.50,4.20,6.50,2026-05-26T08:37:04Z
+2,A,Mexiko,Sydkorea,1.83,3.50,4.50,2026-05-26T08:37:04Z
+2,D,USA,Australien,1.75,3.80,4.50,2026-05-26T08:37:04Z
+2,C,Skottland,Marocko,3.60,3.20,2.12,2026-05-26T08:37:04Z
+2,C,Brasilien,Haiti,1.05,13.00,35.00,2026-05-26T08:37:04Z
+2,D,Turkiet,Paraguay,2.20,3.20,3.40,2026-05-26T08:37:04Z
+2,F,Nederländerna,Sverige,1.65,4.00,4.90,2026-05-26T08:37:04Z
+2,E,Tyskland,Elfenbenskusten,1.57,4.20,5.40,2026-05-26T08:37:04Z
+2,E,Ecuador,Curaçao,1.26,5.80,11.00,2026-05-26T08:37:04Z
+2,F,Tunisien,Japan,4.35,3.30,1.90,2026-05-26T08:37:04Z
+2,H,Spanien,Saudiarabien,1.10,9.50,20.00,2026-05-26T08:37:04Z
+2,G,Belgien,Iran,1.42,4.50,7.30,2026-05-26T08:37:04Z
+2,H,Uruguay,Kap Verde,1.44,4.45,7.00,2026-05-26T08:37:04Z
+2,G,Nya Zeeland,Egypten,4.90,3.75,1.70,2026-05-26T08:37:04Z
+2,J,Argentina,Österrike,1.67,3.75,5.10,2026-05-26T08:37:04Z
+2,I,Frankrike,Irak,1.12,8.50,20.00,2026-05-26T08:37:04Z
+2,I,Norge,Senegal,2.02,3.55,3.50,2026-05-26T08:37:04Z
+2,J,Jordanien,Algeriet,4.95,3.75,1.70,2026-05-26T08:37:04Z
+2,K,Portugal,Uzbekistan,1.22,6.40,11.50,2026-05-26T08:37:04Z
+2,L,England,Ghana,1.33,5.20,8.50,2026-05-26T08:37:04Z
+2,L,Panama,Kroatien,6.70,4.05,1.50,2026-05-26T08:37:04Z
+2,K,Colombia,Kongo-Kinshasa,1.50,4.15,6.90,2026-05-26T08:37:04Z
