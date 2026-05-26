@@ -13,6 +13,32 @@ function formatTime(date) {
   return `Uppdaterad ${h}:${m}`;
 }
 
+// Odds-oberoende rättning: parsar poäng ur answer-text ("Mexiko 147 p" → 147)
+// och prefix-matchar pick mot home/away-namn istället för full strängjämförelse.
+function extractPoints(answerText) {
+  if (!answerText) return 0;
+  const m = String(answerText).match(/(\d+)\s*p\s*$/);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
+function pickSide(pick, match) {
+  if (!pick || !match) return null;
+  if (pick.startsWith(match.home + ' ')) return '1';
+  if (pick.startsWith('Oavgjort ')) return 'X';
+  if (pick.startsWith(match.away + ' ')) return '2';
+  return null;
+}
+
+function pointsForPick(pick, match) {
+  if (!match || !match.facit) return 0;
+  const side = pickSide(pick, match);
+  if (!side || side !== String(match.facit).trim()) return 0;
+  if (side === '1') return extractPoints(match.answer1);
+  if (side === 'X') return extractPoints(match.answerX);
+  if (side === '2') return extractPoints(match.answer2);
+  return 0;
+}
+
 function shortMatchName(home, away) {
   // Kortform för långa lagnamn (sparas plats i headern)
   const shorten = (name) => {
@@ -67,8 +93,8 @@ function renderRows(matches, players, nextMatchIndex) {
     const cells = picks.map((pick, i) => {
       const m = matches[i];
       let cls = 'match-cell';
-      if (m && m.facitText) {
-        cls += (pick && pick === m.facitText) ? ' correct' : ' wrong';
+      if (m && m.facit) {
+        cls += pointsForPick(pick, m) > 0 ? ' correct' : ' wrong';
       }
       return `<td class="${cls}">${escapeHtml(pick || '')}</td>`;
     }).join('');
@@ -127,6 +153,24 @@ async function fetchLeaderboard() {
 
     const matches = data.matches || [];
     const players = data.players || [];
+
+    // Räkna om totalPoints + rank lokalt så rättningen är robust mot odds-uppdateringar.
+    // Sheets-formlerna i Topplistan-fliken matchar pick-text mot facit-svartext, vilket
+    // bryter när oddsen ändras efter att picks lämnats in. Vi ignorerar backend's värden.
+    players.forEach(p => {
+      let sum = 0;
+      (p.picks || []).forEach((pick, i) => { sum += pointsForPick(pick, matches[i]); });
+      p.totalPoints = sum;
+    });
+    players.sort((a, b) => {
+      if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints;
+      const da = Number(a.deviation) || 0;
+      const db = Number(b.deviation) || 0;
+      if (da !== db) return da - db;
+      return String(a.teamName).localeCompare(String(b.teamName), 'sv');
+    });
+    players.forEach((p, i) => { p.rank = i + 1; });
+
     // Räkna fördelningen lokalt med prefix-match på lagnamn / "Oavgjort ".
     // Picks sparas som text-snapshot ("Mexiko 200 p") vid submission, men match.answer1/X/2
     // ändras vid odds-uppdatering — full strängmatch i backend ger då 0/0/0.
