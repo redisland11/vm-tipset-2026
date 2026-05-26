@@ -214,14 +214,16 @@ function doGet(e) {
     });
 
     // --- Tipsfördelning per match (count1/X/2) ---
+    // Prefix-match istället för full strängmatch: picks sparas som text-snapshot
+    // ("Mexiko 200 p") vid submission, men m.answer1/X/2 ändras vid odds-uppdatering.
     const distribution = matches.map((m, i) => {
       let c1 = 0, cX = 0, c2 = 0;
       players.forEach(p => {
         const pick = p.picks[i];
         if (!pick) return;
-        if (pick === m.answer1) c1++;
-        else if (pick === m.answerX) cX++;
-        else if (pick === m.answer2) c2++;
+        if (pick.indexOf(m.home + ' ') === 0) c1++;
+        else if (pick.indexOf('Oavgjort ') === 0) cX++;
+        else if (pick.indexOf(m.away + ' ') === 0) c2++;
       });
       const total = c1 + cX + c2;
       return {

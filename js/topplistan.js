@@ -127,7 +127,20 @@ async function fetchLeaderboard() {
 
     const matches = data.matches || [];
     const players = data.players || [];
-    const distribution = data.distribution || matches.map(() => ({ count1: 0, countX: 0, count2: 0, total: 0 }));
+    // Räkna fördelningen lokalt med prefix-match på lagnamn / "Oavgjort ".
+    // Picks sparas som text-snapshot ("Mexiko 200 p") vid submission, men match.answer1/X/2
+    // ändras vid odds-uppdatering — full strängmatch i backend ger då 0/0/0.
+    const distribution = matches.map((m, i) => {
+      let c1 = 0, cX = 0, c2 = 0;
+      players.forEach(p => {
+        const pick = (p.picks && p.picks[i]) || '';
+        if (!pick) return;
+        if (pick.startsWith(m.home + ' ')) c1++;
+        else if (pick.startsWith('Oavgjort ')) cX++;
+        else if (pick.startsWith(m.away + ' ')) c2++;
+      });
+      return { count1: c1, countX: cX, count2: c2, total: c1 + cX + c2 };
+    });
     const nextMatchIndex = typeof data.nextMatchIndex === 'number' ? data.nextMatchIndex : -1;
 
     document.getElementById('lbThead').innerHTML = renderHeader(matches, distribution);
