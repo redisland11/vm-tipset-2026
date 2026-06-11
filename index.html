@@ -2,6 +2,12 @@
 <html lang="sv">
 <head>
   <meta charset="utf-8">
+  <script>
+    // VM-tipset: sätt till true när tipset stänger (deadline ~2026-06-11 21:00).
+    // Då skickas alla som öppnar mainlänken vidare till topplistan i stället för formuläret.
+    var TIPSET_STANGT = true;
+    if (TIPSET_STANGT) location.replace('topplistan.html');
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>VM-tävling i stugan 2026</title>
