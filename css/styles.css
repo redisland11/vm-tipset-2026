@@ -829,17 +829,21 @@ a:hover { text-decoration: underline; }
 .lb-table .match-bar-labels {
   display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: 7px;
   font-size: 10px;
   font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
   margin-bottom: 4px;
 }
 
 .lb-table .match-bar-labels span {
-  width: 18px;
   text-align: center;
+  font-weight: 600;
 }
+
+/* Färga siffrorna som respektive stapel (1 = grön, X = mörk, 2 = orange) */
+.lb-table .match-bar-labels span:nth-child(1) { color: #2ea043; }
+.lb-table .match-bar-labels span:nth-child(2) { color: #3a3a3a; }
+.lb-table .match-bar-labels span:nth-child(3) { color: #f59f00; }
 
 .lb-table .match-name {
   font-size: 11px;
@@ -1005,8 +1009,7 @@ a:hover { text-decoration: underline; }
 
   .lb-table .match-bars { height: 28px; gap: 3px; }
   .lb-table .match-bars .b { width: 14px; }
-  .lb-table .match-bar-labels { gap: 3px; font-size: 9px; }
-  .lb-table .match-bar-labels span { width: 14px; }
+  .lb-table .match-bar-labels { gap: 5px; font-size: 9px; }
   .lb-table .match-name { font-size: 10px; }
   .lb-table tbody .match-cell { font-size: 10px; padding: 4px 4px; }
 }
