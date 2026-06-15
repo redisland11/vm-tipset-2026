@@ -605,6 +605,65 @@ a:hover { text-decoration: underline; }
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
+/* "Visa bara favoriter"-knapp */
+.fav-toggle {
+  padding: 7px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.fav-toggle:hover {
+  border-color: #f5b301;
+}
+
+.fav-toggle.is-active {
+  background: #f5b301;
+  border-color: #f5b301;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Favorit-stjärna i lagnamns-kolumnen */
+.lb-table .fav-star {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-right: 6px;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--border-strong);
+  transition: color 0.12s, transform 0.08s;
+}
+
+.lb-table .fav-star:hover,
+.lb-table .fav-star.is-fav {
+  color: #f5b301;
+}
+
+.lb-table .fav-star:active {
+  transform: scale(1.25);
+}
+
+/* Tomt-läge när favoritfiltret är på utan favoriter */
+.fav-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.fav-empty.hidden {
+  display: none;
+}
+
 .lb-table tbody tr.filtered-out {
   display: none;
 }

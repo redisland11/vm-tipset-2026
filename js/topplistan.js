@@ -7,6 +7,34 @@ function escapeHtml(str) {
     .replaceAll("'", '&#39;');
 }
 
+// ---- Favoritlag (cachas lokalt per webbläsare) ----
+// Nyckel = lagnamn (teamName). Lagras som JSON-array i localStorage.
+const FAV_KEY = 'vmtipset_favoriter';
+let currentFavOnly = false; // "Visa bara favoriter"-läget — börjar av vid varje sidladdning
+
+function loadFavorites() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function saveFavorites(set) {
+  try {
+    localStorage.setItem(FAV_KEY, JSON.stringify([...set]));
+  } catch (e) { /* localStorage avstängt/full — ignorera tyst */ }
+}
+
+function toggleFavorite(teamName) {
+  const favs = loadFavorites();
+  if (favs.has(teamName)) favs.delete(teamName);
+  else favs.add(teamName);
+  saveFavorites(favs);
+  return favs.has(teamName);
+}
+
 function formatTime(date) {
   const h = String(date.getHours()).padStart(2, '0');
   const m = String(date.getMinutes()).padStart(2, '0');
@@ -82,14 +110,17 @@ function renderHeader(matches, distribution) {
   </tr>`;
 }
 
-function renderRows(matches, players, nextMatchIndex) {
+function renderRows(matches, players, nextMatchIndex, favorites) {
   if (!players.length) {
     return `<tr class="empty"><td class="empty-cell" colspan="${4 + matches.length}">Inga tippade ännu. Bli först — <a href="index.html">tipsa här</a>.</td></tr>`;
   }
 
+  const favs = favorites || new Set();
   return players.map(p => {
     const picks = p.picks || [];
     const nextPick = (nextMatchIndex >= 0 && picks[nextMatchIndex]) ? picks[nextMatchIndex] : '—';
+    const fav = favs.has(p.teamName);
+    const team = escapeHtml(p.teamName);
     const cells = picks.map((pick, i) => {
       const m = matches[i];
       let cls = 'match-cell';
@@ -100,7 +131,7 @@ function renderRows(matches, players, nextMatchIndex) {
     }).join('');
     return `<tr>
       <td class="sticky-col col-rank rank">${escapeHtml(p.rank)}</td>
-      <td class="sticky-col col-name name">${escapeHtml(p.teamName)}</td>
+      <td class="sticky-col col-name name" data-team="${team}"><button type="button" class="fav-star${fav ? ' is-fav' : ''}" data-team="${team}" aria-pressed="${fav}" aria-label="Markera som favorit" title="Markera som favorit">${fav ? '★' : '☆'}</button><span class="team-label">${team}</span></td>
       <td class="sticky-col col-points points">${escapeHtml(p.totalPoints)}</td>
       <td class="sticky-col col-next next">${escapeHtml(nextPick)}</td>
       ${cells}
@@ -188,11 +219,10 @@ async function fetchLeaderboard() {
     const nextMatchIndex = typeof data.nextMatchIndex === 'number' ? data.nextMatchIndex : -1;
 
     document.getElementById('lbThead').innerHTML = renderHeader(matches, distribution);
-    document.getElementById('lbTbody').innerHTML = renderRows(matches, players, nextMatchIndex);
+    document.getElementById('lbTbody').innerHTML = renderRows(matches, players, nextMatchIndex, loadFavorites());
 
-    // Återapplicera nuvarande sökfilter (om något) efter ny render
-    const searchInput = document.getElementById('lbSearch');
-    if (searchInput && searchInput.value) applySearch(searchInput.value);
+    // Återapplicera aktiva filter (sök + favoriter) efter ny render
+    applyFilters();
 
     status.classList.add('hidden');
     lastUpdated.textContent = formatTime(new Date(data.updatedAt || Date.now()));
@@ -206,19 +236,63 @@ async function fetchLeaderboard() {
   }
 }
 
-function applySearch(term) {
-  const t = (term || '').trim().toLowerCase();
+// Ett rad-filter som kombinerar sökrutan OCH "visa bara favoriter".
+// En rad visas om den matchar söktermen (om någon) OCH (om favoritläget är på) är favorit.
+function applyFilters() {
+  const searchInput = document.getElementById('lbSearch');
+  const t = (searchInput ? searchInput.value : '').trim().toLowerCase();
+  const favs = loadFavorites();
   const tbody = document.getElementById('lbTbody');
   if (!tbody) return;
+
+  let visible = 0;
   tbody.querySelectorAll('tr').forEach(row => {
-    if (!t) {
-      row.classList.remove('filtered-out');
-      return;
-    }
     const teamCell = row.querySelector('.col-name');
-    const teamText = teamCell ? teamCell.textContent.toLowerCase() : '';
-    row.classList.toggle('filtered-out', !teamText.includes(t));
+    if (!teamCell) return; // t.ex. tom-läge-raden saknar lagnamn
+    const teamName = teamCell.dataset.team || '';
+    const matchesSearch = !t || teamName.toLowerCase().includes(t);
+    const matchesFav = !currentFavOnly || favs.has(teamName);
+    const show = matchesSearch && matchesFav;
+    row.classList.toggle('filtered-out', !show);
+    if (show) visible++;
   });
+
+  // Tomt-läge-meddelande för favoritfiltret
+  const favEmpty = document.getElementById('favEmpty');
+  if (favEmpty) {
+    if (currentFavOnly && favs.size === 0) {
+      favEmpty.textContent = 'Du har inte valt några favoriter än — klicka på ☆ vid ett lag.';
+      favEmpty.classList.remove('hidden');
+    } else if (currentFavOnly && visible === 0) {
+      favEmpty.textContent = 'Inga favoriter matchar sökningen.';
+      favEmpty.classList.remove('hidden');
+    } else {
+      favEmpty.classList.add('hidden');
+    }
+  }
+}
+
+// Klick på en stjärna togglar favorit + uppdaterar lagringen och vyn.
+function onFavStarClick(e) {
+  const btn = e.target.closest('.fav-star');
+  if (!btn) return;
+  const team = btn.dataset.team || '';
+  const nowFav = toggleFavorite(team);
+  btn.classList.toggle('is-fav', nowFav);
+  btn.textContent = nowFav ? '★' : '☆';
+  btn.setAttribute('aria-pressed', String(nowFav));
+  if (currentFavOnly) applyFilters(); // raden kan behöva döljas/visas direkt
+}
+
+// Toggla "visa bara favoriter"-knappen.
+function toggleFavView() {
+  currentFavOnly = !currentFavOnly;
+  const btn = document.getElementById('favToggle');
+  if (btn) {
+    btn.classList.toggle('is-active', currentFavOnly);
+    btn.setAttribute('aria-pressed', String(currentFavOnly));
+  }
+  applyFilters();
 }
 
 // Ingen auto-polling: topplistan ändras bara när facit matas in (2-3 ggr/dag).
@@ -226,7 +300,18 @@ function applySearch(term) {
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('lbSearch');
   if (searchInput) {
-    searchInput.addEventListener('input', e => applySearch(e.target.value));
+    searchInput.addEventListener('input', applyFilters);
+  }
+
+  const favToggle = document.getElementById('favToggle');
+  if (favToggle) {
+    favToggle.addEventListener('click', toggleFavView);
+  }
+
+  // Stjärn-klick via event-delegation på tbody (överlever omrendering av innerHTML).
+  const tbody = document.getElementById('lbTbody');
+  if (tbody) {
+    tbody.addEventListener('click', onFavStarClick);
   }
 
   fetchLeaderboard().then(() => {

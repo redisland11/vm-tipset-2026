@@ -29,6 +29,7 @@
             <span class="lb-legend-item"><span class="legend-bar b2"></span> 2 (borta)</span>
           </div>
           <input id="lbSearch" class="lb-search" type="search" placeholder="Sök lagnamn…" autocomplete="off">
+          <button id="favToggle" class="fav-toggle" type="button" aria-pressed="false">★ Visa bara favoriter</button>
         </div>
       </div>
 
@@ -38,6 +39,8 @@
         <span class="lb-spinner" aria-hidden="true"></span>
         <span>Hämtar topplistan…</span>
       </div>
+
+      <div id="favEmpty" class="fav-empty hidden"></div>
 
       <div class="lb-table-wrapper" id="lbWrapper">
         <table class="lb-table" id="lbTable">
