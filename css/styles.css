@@ -634,12 +634,14 @@ a:hover { text-decoration: underline; }
 .lb-table .fav-star {
   border: none;
   background: none;
-  padding: 0;
-  margin-right: 6px;
+  /* Padding + negativ marginal = större tap-yta för fingret utan att glyfen flyttas */
+  padding: 6px;
+  margin: -6px 0 -6px -6px;
   font-size: 15px;
   line-height: 1;
   cursor: pointer;
   color: var(--border-strong);
+  -webkit-tap-highlight-color: transparent;
   transition: color 0.12s, transform 0.08s;
 }
 
@@ -1022,6 +1024,12 @@ a:hover { text-decoration: underline; }
   .lb-card-header h2 { font-size: 17px; }
   .lb-subtitle { font-size: 12px; }
   .lb-legend { font-size: 11px; gap: 8px; }
+
+  /* Favoriter på mobil: sök + knapp fyller bredden, större stjärna att träffa */
+  .lb-card-actions { width: 100%; gap: 10px; }
+  .lb-search { flex: 1 1 140px; min-width: 0; }
+  .fav-toggle { flex: 0 0 auto; }
+  .lb-table .fav-star { font-size: 18px; }
 
   .lb-table .col-rank {
     width: 34px;
